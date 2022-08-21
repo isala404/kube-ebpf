@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: kube-ebpf
-          image: docker.io/supiri/kube-ebpf
+          image: ghcr.io/mrsupiri/kube-ebpf:latest
           ports:
             - containerPort: 8000
               name: metrics
@@ -40,23 +40,11 @@ spec:
               add:
                 - SYS_ADMIN
           volumeMounts:
-            - name: lsb-release
-              mountPath: /etc/lsb-release.host
-              readOnly: false
-            - name: os-release
-              mountPath: /etc/os-release.host
-              readOnly: false
             - name: modules-dir
               mountPath: /lib/modules
               readOnly: false
-            - name: modules-host
-              mountPath: /lib/modules.host
-              readOnly: false
             - name: linux-headers-generated
               mountPath: /usr/src/
-              readOnly: false
-            - name: boot-host
-              mountPath: /boot.host
               readOnly: false
             - name: debug
               mountPath: /sys/kernel/debug
@@ -66,7 +54,7 @@ spec:
       serviceAccountName: kube-ebpf
       initContainers:
         - name: init-headers
-          image: ghcr.io/mrsupiri/lazy-koala/gazer:init
+          image: ghcr.io/mrsupiri/kube-ebpf/init-headers:latest
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
