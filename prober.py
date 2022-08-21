@@ -9,11 +9,11 @@ import threading
 import os
 
 
-ms = Histogram("request_duration_seconds", "TCP event latency", ["namespace", "name", "port"])
-tx_kb = Counter("transmitted_bytes", "Number of sent bytes during TCP event", ["namespace", "name"])
-rx_kb = Counter("acknowledged_bytes", "Number of received bytes during TCP event", ["namespace", "name", "port"])
-request_sent = Counter("requests_sent", "Total request sent", ["namespace", "name"])
-request_received = Counter("requests_received", "Total request received", ["namespace", "name", "port"])
+ms = Histogram("kube_ebpf_request_duration_seconds", "TCP event latency", ["namespace", "name", "port"])
+tx_kb = Counter("kube_ebpf_transmitted_bytes", "Number of sent bytes during TCP event", ["namespace", "name"])
+rx_kb = Counter("kube_ebpf_acknowledged_bytes", "Number of received bytes during TCP event", ["namespace", "name", "port"])
+request_sent = Counter("kube_ebpf_requests_sent", "Total request sent", ["namespace", "name"])
+request_received = Counter("kube_ebpf_requests_received", "Total request received", ["namespace", "name", "port"])
 
 
 # define BPF program
