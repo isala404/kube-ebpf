@@ -10,8 +10,8 @@ import os
 
 
 ms = Histogram("request_duration_seconds", "TCP event latency", ["namespace", "name", "port"])
-tx_kb = Histogram("transmitted_bytes", "Number of sent bytes during TCP event", ["namespace", "name"])
-rx_kb = Histogram("acknowledged_bytes", "Number of received bytes during TCP event", ["namespace", "name", "port"])
+tx_kb = Counter("transmitted_bytes", "Number of sent bytes during TCP event", ["namespace", "name"])
+rx_kb = Counter("acknowledged_bytes", "Number of received bytes during TCP event", ["namespace", "name", "port"])
 request_sent = Counter("requests_sent", "Total request sent", ["namespace", "name"])
 request_received = Counter("requests_received", "Total request received", ["namespace", "name", "port"])
 
@@ -77,11 +77,11 @@ def update_metrics(data):
 
     if source is not None:
         request_sent.labels(source['namespace'], source['name']).inc()
-        tx_kb.labels(source['namespace'], source['name']).observe(data['transmit_bytes'])
+        tx_kb.labels(source['namespace'], source['name']).inc(data['transmit_bytes'])
 
     if destination is not None:
         request_received.labels(destination['namespace'], destination['name'], data['destination_port']).inc()
-        rx_kb.labels(destination['namespace'], destination['name'], data['destination_port']).observe(data['receive_bytes'])
+        rx_kb.labels(destination['namespace'], destination['name'], data['destination_port']).inc(data['receive_bytes'])
         ms.labels(destination['namespace'], destination['name'], data['destination_port']).observe(data['duration'])
 
 
