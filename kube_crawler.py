@@ -2,6 +2,7 @@ import time
 import requests
 import os
 
+# Read the token from kubernetes runtime mount
 with open('/var/run/secrets/kubernetes.io/serviceaccount/token', 'r') as f:
     token = f.read()
 
@@ -24,11 +25,17 @@ def poll_kube_api():
     print("Started polling Kubernetes API")
 
     while True:
+
+        # Query Kubernetes API with a fieldSelector to scope to the pod
         r = requests.get(f"https://{KUBERNETES_SERVICE_HOST}:{KUBERNETES_PORT_443_TCP_PORT}/api/v1/pods?fieldSelector=spec.nodeName={NODE_NAME}", headers={'Authorization': f'Bearer {token}'},  verify="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
 
         try:
             data = r.json()
             pods_list_ = {}
+
+            # for each pod update the hashmap with the key as the pod IP
+            # and namespace and name as the value, so we can easily query 
+            # the pod data by IP
             for item in data['items']:
                 pods_list_[item['status']['podIP']] = {
                     'namespace': item['metadata']['namespace'],
